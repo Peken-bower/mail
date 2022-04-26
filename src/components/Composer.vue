@@ -306,7 +306,7 @@
 	<EmptyContent v-else-if="state === STATES.DISCARDED" icon="icon-mail">
 		<h2>{{ t('mail', 'Draft was discarded!') }}</h2>
 	</EmptyContent>
-	<div v-else-if="state === STATES.ERROR" class="emptycontent" role="alert">
+	<EmptyContent v-else-if="state === STATES.ERROR" class="centered-content" role="alert">
 		<h2>{{ t('mail', 'Error sending your message') }}</h2>
 		<p v-if="errorText">
 			{{ errorText }}
@@ -317,7 +317,7 @@
 		<button class="button primary" @click="onSend">
 			{{ t('mail', 'Retry') }}
 		</button>
-	</div>
+	</EmptyContent>
 	<div v-else-if="state === STATES.WARNING" class="emptycontent" role="alert">
 		<h2>{{ t('mail', 'Warning sending your message') }}</h2>
 		<p v-if="errorText">
@@ -1188,5 +1188,8 @@ export default {
 }
 .send-button .send-icon {
 	padding-right: 5px;
+}
+.centered-content {
+	margin-top: 0 !important;
 }
 </style>
