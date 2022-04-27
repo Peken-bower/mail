@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0436f8fd245103ce1896eb8e6f1ee241",
+    "content-hash": "6475648c737bb618b42f73129ef30ea4",
     "packages": [
         {
             "name": "amphp/amp",
@@ -1965,6 +1965,62 @@
             "time": "2022-04-27T16:49:35+00:00"
         },
         {
+            "name": "nextcloud/horde-smtp",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nextcloud/horde-smtp.git",
+                "reference": "8b6cae75c328d7aee19957123d23b69eb98c52a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nextcloud/horde-smtp/zipball/8b6cae75c328d7aee19957123d23b69eb98c52a1",
+                "reference": "8b6cae75c328d7aee19957123d23b69eb98c52a1",
+                "shasum": ""
+            },
+            "require": {
+                "bytestream/horde-exception": "^2",
+                "bytestream/horde-mail": "^2",
+                "bytestream/horde-socket-client": "^2",
+                "bytestream/horde-support": "^2",
+                "bytestream/horde-translation": "^2.2",
+                "bytestream/horde-util": "^2",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Horde_Smtp": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Slusarz",
+                    "email": "slusarz@horde.org",
+                    "role": "lead"
+                }
+            ],
+            "description": "Horde SMTP client",
+            "homepage": "https://www.horde.org",
+            "support": {
+                "source": "https://github.com/nextcloud/horde-smtp/tree/master"
+            },
+            "time": "2022-04-27T17:09:33+00:00"
+        },
+        {
             "name": "psr/log",
             "version": "1.1.4",
             "source": {
@@ -3039,6 +3095,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "nextcloud/horde-managesieve": 20,
+        "nextcloud/horde-smtp": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

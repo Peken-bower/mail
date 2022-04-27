@@ -37,6 +37,7 @@
 		"ezyang/htmlpurifier": "4.14.0",
 		"gravatarphp/gravatar": "^2.0",
 		"nextcloud/horde-managesieve": "dev-master",
+		"nextcloud/horde-smtp": "dev-master",
 		"psr/log": "^1",
 		"rubix/ml": "0.4.2",
 		"sabberworm/php-css-parser": "^8.3",
