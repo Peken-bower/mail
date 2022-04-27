@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6475648c737bb618b42f73129ef30ea4",
+    "content-hash": "b1c307444d66ee5ad260eb0d712b61dc",
     "packages": [
         {
             "name": "amphp/amp",
@@ -1913,7 +1913,7 @@
         },
         {
             "name": "nextcloud/horde-managesieve",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextcloud/horde-managesieve.git",
@@ -1934,7 +1934,6 @@
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1960,13 +1959,13 @@
             "description": "ManageSieve client library",
             "homepage": "https://www.horde.org",
             "support": {
-                "source": "https://github.com/nextcloud/horde-managesieve/tree/master"
+                "source": "https://github.com/nextcloud/horde-managesieve/tree/v1.0.0"
             },
             "time": "2022-04-27T16:49:35+00:00"
         },
         {
             "name": "nextcloud/horde-smtp",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextcloud/horde-smtp.git",
@@ -1990,7 +1989,6 @@
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -2016,7 +2014,7 @@
             "description": "Horde SMTP client",
             "homepage": "https://www.horde.org",
             "support": {
-                "source": "https://github.com/nextcloud/horde-smtp/tree/master"
+                "source": "https://github.com/nextcloud/horde-smtp/tree/v1.0.0"
             },
             "time": "2022-04-27T17:09:33+00:00"
         },
@@ -3094,8 +3092,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "nextcloud/horde-managesieve": 20,
-        "nextcloud/horde-smtp": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
