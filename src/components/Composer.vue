@@ -147,23 +147,27 @@
 				:quoted-text="body"
 				:is-reply-or-forward="isReply || isForward" />
 		</div>
-		<div class="composer-actions">
-			<ComposerAttachments v-model="attachments"
-				:bus="bus"
-				:upload-size-limit="attachmentSizeLimit"
-				@upload="onAttachmentsUploading" />
-			<div class="composer-actions-right">
+		<ComposerAttachments v-model="attachments"
+			:bus="bus"
+			:upload-size-limit="attachmentSizeLimit"
+			@upload="onAttachmentsUploading" />
+		<p class="composer-actions-draft">
+			<span class="draft-status">{{ draftStatusMessage }}</span>
+		</p>
+		<div class="composer-actions-right">
+			<div class="composer-actions-right--primary-actions">
+				<button v-if="!savingDraft && !canSaveDraft"
+					class="button"
+					@click="onSave">
+					<ContentSave fill-color="var(--color-primary)" :size="30" :title="t('mail', 'Save draft')" />
+				</button>
 				<button v-if="savingDraft === false"
 					class="button"
-					:title="t('mail', 'Discard & close draft')"
 					@click="discardDraft">
-					{{ t('mail', 'Discard draft') }}
+					<CloseCircle fill-color="var(--color-primary)" :size="30" :title="t('mail', 'Discard & close draft')" />
 				</button>
-				<p class="composer-actions-draft">
-					<span v-if="!canSaveDraft" id="draft-status">{{ t('mail', 'Cannot save draft because this account does not have a drafts mailbox configured.') }}</span>
-					<span v-else-if="savingDraft === true" id="draft-status">{{ t('mail', 'Saving draft …') }}</span>
-					<span v-else-if="savingDraft === false" id="draft-status">{{ t('mail', 'Draft saved') }}</span>
-				</p>
+			</div>
+			<div class="composer-actions-right--secondary-actions">
 				<Actions>
 					<template v-if="!isMoreActionsOpen">
 						<ActionButton icon="icon-upload" @click="onAddLocalAttachment">
@@ -238,7 +242,7 @@
 						</ActionRadio>
 						<ActionRadio :value="dateTomorrowMorning"
 							name="sendLater"
-							:checked="isSendAtTomorrowMorning"
+							:checked="Boolean(isSendAtTomorrowMorning)"
 							class="send-action-radio send-action-radio--multiline"
 							@update:checked="sendAtVal = dateTomorrowMorning"
 							@change="onChangeSendLater(dateTomorrowMorning)">
@@ -246,7 +250,7 @@
 						</ActionRadio>
 						<ActionRadio :value="dateTomorrowAfternoon"
 							name="sendLater"
-							:checked="isSendAtTomorrowAfternoon"
+							:checked="Boolean(isSendAtTomorrowAfternoon)"
 							class="send-action-radio send-action-radio--multiline"
 							@update:checked="sendAtVal = dateTomorrowAfternoon"
 							@change="onChangeSendLater(dateTomorrowAfternoon)">
@@ -254,7 +258,7 @@
 						</ActionRadio>
 						<ActionRadio :value="dateMondayMorning"
 							name="sendLater"
-							:checked="isSendAtMondayMorning"
+							:checked="Boolean(isSendAtMondayMorning)"
 							class="send-action-radio send-action-radio--multiline"
 							@update:checked="sendAtVal = dateMondayMorning"
 							@change="onChangeSendLater(dateMondayMorning)">
@@ -262,7 +266,7 @@
 						</ActionRadio>
 						<ActionRadio name="sendLater"
 							class="send-action-radio"
-							:checked="isSendAtCustom"
+							:checked="Boolean(isSendAtCustom)"
 							:value="customSendTime"
 							@update:checked="sendAtVal = customSendTime"
 							@change="onChangeSendLater(customSendTime)">
@@ -284,7 +288,6 @@
 						</ActionInput>
 					</template>
 				</Actions>
-
 				<button :disabled="!canSend"
 					class="button primary send-button"
 					type="submit"
@@ -348,14 +351,16 @@ import ActionCheckbox from '@nextcloud/vue/dist/Components/ActionCheckbox'
 import ActionInput from '@nextcloud/vue/dist/Components/ActionInput'
 import ActionLink from '@nextcloud/vue/dist/Components/ActionLink'
 import ActionRadio from '@nextcloud/vue/dist/Components/ActionRadio'
+import ChevronLeft from 'vue-material-design-icons/ChevronLeft'
+import CloseCircle from 'vue-material-design-icons/CloseCircle'
+import ComposerAttachments from './ComposerAttachments'
+import ContentSave from 'vue-material-design-icons/ContentSave'
 import EmptyContent from '@nextcloud/vue/dist/Components/EmptyContent'
 import Multiselect from '@nextcloud/vue/dist/Components/Multiselect'
 import { showError } from '@nextcloud/dialogs'
 import { translate as t, getCanonicalLocale, getFirstDay, getLocale } from '@nextcloud/l10n'
 import Vue from 'vue'
 
-import ComposerAttachments from './ComposerAttachments'
-import ChevronLeft from 'vue-material-design-icons/ChevronLeft'
 import { findRecipient } from '../service/AutocompleteService'
 import { detect, html, plain, toHtml, toPlain } from '../util/text'
 import Loading from './Loading'
@@ -372,6 +377,7 @@ import NoDraftsMailboxConfiguredError
 	from '../errors/NoDraftsMailboxConfiguredError'
 import ManyRecipientsError
 	from '../errors/ManyRecipientsError'
+
 import Send from 'vue-material-design-icons/Send'
 import SendClock from 'vue-material-design-icons/SendClock'
 import moment from '@nextcloud/moment'
@@ -405,6 +411,8 @@ export default {
 		ActionRadio,
 		ComposerAttachments,
 		ChevronLeft,
+		CloseCircle,
+		ContentSave,
 		Loading,
 		Multiselect,
 		TextEditor,
@@ -531,6 +539,7 @@ export default {
 					return value ? moment(value, 'LLL').toDate() : null
 				},
 			},
+			isClickedSaveExplicitly: false,
 		}
 	},
 	computed: {
@@ -642,6 +651,18 @@ export default {
 				&& !this.isSendAtTomorrowMorning
 				&& !this.isSendAtTomorrowAfternoon
 				&& !this.isSendAtMondayMorning
+		},
+
+		draftStatusMessage() {
+			if (!this.canSaveDraft) {
+				return t('calendar', 'Error saving draft')
+			} else if (this.savingDraft && this.canSaveDraft) {
+				return t('mail', 'Saving draft …')
+			} else if (this.savingDraft === false && this.canSaveDraft === true) {
+				return t('mail', 'Saved')
+			} else {
+				return ''
+			}
 		},
 	},
 	watch: {
@@ -817,7 +838,7 @@ export default {
 				})
 				.catch(async(error) => {
 					console.error('could not save draft', error)
-					const canSave = await matchError(error, {
+					await matchError(error, {
 						[NoDraftsMailboxConfiguredError.getName()]() {
 							return false
 						},
@@ -825,18 +846,28 @@ export default {
 							return true
 						},
 					})
-					if (!canSave) {
-						this.canSaveDraft = false
-					}
+					this.canSaveDraft = false
 				})
 				.then((uid) => {
 					this.savingDraft = false
+					console.error('canSaveDraft: ', this.canSaveDraft)
 					return uid
 				})
 			return this.draftsPromise
 		},
+		callSaveDraft(withDebounce, ...args) {
+			if (withDebounce) {
+				return this.saveDraftDebounced(...args)
+			} else {
+				return this.saveDraft(...args)
+			}
+		},
+		onSave() {
+			this.isClickedSaveExplicitly = true
+			this.callSaveDraft(false, this.getMessageData)
+		},
 		onInputChanged() {
-			this.saveDraftDebounced(this.getMessageData)
+			this.callSaveDraft(true, this.getMessageData)
 			if (this.appendSignature) {
 				const signatureValue = toHtml(detect(this.selectedAlias.signature)).value
 				this.bus.$emit('insertSignature', signatureValue, this.selectedAlias.signatureAboveQuote)
@@ -1009,8 +1040,13 @@ export default {
 		},
 		async discardDraft() {
 			this.state = STATES.DISCARDING
-			const id = await this.draftsPromise
-			await this.$store.dispatch('deleteMessage', { id })
+			let id
+			try {
+				id = await this.draftsPromise
+				await this.$store.dispatch('deleteMessage', { id })
+			} catch (err) {
+				logger.error('Could not delete message with id ' + id)
+			}
 			this.state = STATES.DISCARDED
 			this.$emit('close')
 		},
@@ -1053,17 +1089,12 @@ export default {
 .composer-actions {
 	display: flex;
 	flex-direction: row;
-	align-items: flex-end;
+	align-items: center;
 	justify-content: space-between;
 	position: sticky;
 	bottom: 0;
 	padding: 12px;
 	background: linear-gradient(rgba(255, 255, 255, 0), var(--color-main-background-translucent) 50%);
-}
-
-.composer-actions-right {
-	display: flex;
-	align-items: center;
 }
 
 .composer-fields {
@@ -1119,10 +1150,11 @@ export default {
 	padding-left: 20px;
 }
 
-#draft-status {
+.draft-status {
 	padding: 5px;
 	opacity: 0.5;
 	font-size: small;
+	display: block;
 }
 
 .from-label,
@@ -1189,4 +1221,41 @@ export default {
 .send-button .send-icon {
 	padding-right: 5px;
 }
+.composer-actions-right {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	justify-content: space-between;
+	padding-bottom: 10px;
+}
+.composer-actions-right--primary-actions {
+	display: flex;
+	flex-direction: row;
+	padding-left: 10px;
+}
+.composer-actions-right--primary-actions .button {
+	padding: 5px;
+}
+.composer-actions-right--secondary-actions {
+	display: flex;
+	flex-direction: row;
+}
+.composer-actions-draft {
+	padding-left: 15px;
+}
+
+@media only screen and (max-width: 450px) {
+	.composer-actions-right {
+		align-items: end;
+		flex-direction: column-reverse;
+	}
+	.composer-actions-draft {
+		text-align: end;
+		padding-right: 15px;
+	}
+	.composer-actions-right--primary-actions {
+		padding-right: 5px;
+	}
+}
+
 </style>
