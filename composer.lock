@@ -1917,12 +1917,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextcloud/horde-managesieve.git",
-                "reference": "cbf4f69f190cf0e4d2d132030adb4bcfa0850ff5"
+                "reference": "fd81621064a4b4bef74aadeffa0e610d844314aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nextcloud/horde-managesieve/zipball/cbf4f69f190cf0e4d2d132030adb4bcfa0850ff5",
-                "reference": "cbf4f69f190cf0e4d2d132030adb4bcfa0850ff5",
+                "url": "https://api.github.com/repos/nextcloud/horde-managesieve/zipball/fd81621064a4b4bef74aadeffa0e610d844314aa",
+                "reference": "fd81621064a4b4bef74aadeffa0e610d844314aa",
                 "shasum": ""
             },
             "require": {
@@ -1943,7 +1943,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Horde_ManageSieve": "lib/"
+                    "Horde\\": "lib/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1962,7 +1962,7 @@
             "support": {
                 "source": "https://github.com/nextcloud/horde-managesieve/tree/master"
             },
-            "time": "2022-04-27T16:42:38+00:00"
+            "time": "2022-04-27T16:49:35+00:00"
         },
         {
             "name": "psr/log",
